@@ -2,8 +2,7 @@
 RussianRoboticsApp
 
 Adding table PriceItems in PostgreSQL
-||||||||||||||||||||||||||||||||||||
-VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
 
 CREATE TABLE IF NOT EXISTS public."PriceItems"
 (
