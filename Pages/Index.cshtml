@@ -1,0 +1,69 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "PriceItems Parser";
+}
+
+<div class="text-center">
+    @* В реале конфиги всех ящиков хранить и выбирать из БД, на вьюшке будет примерно это *@
+    <p>
+        <label for="email">Поставщик</label>
+        <select id="email">
+            <option value="1" selected>ООО "Запчасти даром"</option>
+        </select>
+    </p>
+    <p>
+        <label for="email_server">Email сервер</label>
+        <input type="text" id="email_server" value="imap.gmail.com" />
+    </p>
+    <p>
+        <label for="email_port">Email порт</label>
+        <input type="number" id="email_port" value="993" />
+    </p>
+    <p>
+        <label for="email_ssl">Использовать SSL</label>
+        <input type="checkbox" checked id="email_ssl" />
+    </p>
+    <p>
+        <label for="email_login">Email логин</label>
+        <input type="text" id="email_login" value="chayukov.rr@gmail.com" />
+    </p>
+    <p>
+        <label for="email_pass">Email пароль</label>
+        <input type="text" id="email_pass" value="njjzhacflwnbzdep" />
+    </p>
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+    {
+        @Html.AntiForgeryToken()
+    }
+    <button id="start" onclick="checkMail()">Проверить почтовый ящик</button>
+</div>
+
+<script>
+    function checkMail() {
+        var form = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            method: "POST",
+            url: "/Main/ReadEmail",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("__AjaxAntiForgeryForm",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: {
+                __RequestVerificationToken: token,
+                provider: $("#email :selected").val(),
+                email_server: $("#email_server").val(),
+                email_port: $("#email_port").val(),
+                email_ssl: $("#email_ssl").is(":checked"),
+                email_login: $("#email_login").val(),
+                email_pass: $("#email_pass").val()
+            }
+        })
+            .done(function (msg) {
+                // можно добавить обработок, чтобы узнать количество и т.п.
+                alert("Обработано");
+            });
+    }
+</script>
